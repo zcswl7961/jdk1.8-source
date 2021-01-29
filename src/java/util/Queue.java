@@ -129,6 +129,9 @@ package java.util;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
+ *
+ * 队列，队列是一种常见的数据结构，(线性结构) 先进先出的策略FIFO
+ *
  * @see java.util.Collection
  * @see LinkedList
  * @see PriorityQueue
