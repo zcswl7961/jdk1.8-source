@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c7e3854e-379e-4c98-a426-85924bfe57c5" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$PROJECT_DIR$/../../../maven/apache-maven-3.6.0" />
+        <option name="userSettingsFile" value="D:\maven\apache-maven-3.6.0\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1l31wFdtyry887eG0i4XmHFimO1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="C:/Program Files/Java/jdk1.8.0_181/lib/tools.jar!/" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c7e3854e-379e-4c98-a426-85924bfe57c5" name="Default Changelist" comment="" />
+      <created>1606811197412</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1606811197412</updated>
+      <workItem from="1606811589297" duration="356000" />
+      <workItem from="1606819787403" duration="1163000" />
+      <workItem from="1606889932686" duration="17184000" />
+      <workItem from="1606914563084" duration="8292000" />
+      <workItem from="1606956964855" duration="813000" />
+      <workItem from="1606973621363" duration="682000" />
+      <workItem from="1606974312515" duration="2171000" />
+      <workItem from="1607043406481" duration="7179000" />
+      <workItem from="1607068907916" duration="2199000" />
+      <workItem from="1607088044676" duration="6385000" />
+      <workItem from="1607138162793" duration="2894000" />
+      <workItem from="1607422237689" duration="3170000" />
+      <workItem from="1607484287437" duration="227000" />
+      <workItem from="1607484520343" duration="9642000" />
+      <workItem from="1607592076828" duration="2050000" />
+      <workItem from="1607862263955" duration="549000" />
+      <workItem from="1607907948521" duration="5317000" />
+      <workItem from="1607992811279" duration="10979000" />
+      <workItem from="1608081817765" duration="1520000" />
+      <workItem from="1608210537208" duration="1743000" />
+      <workItem from="1608252825028" duration="1388000" />
+      <workItem from="1608808242216" duration="973000" />
+      <workItem from="1610354258167" duration="629000" />
+      <workItem from="1610506179370" duration="621000" />
+      <workItem from="1610537988006" duration="401000" />
+      <workItem from="1610587370009" duration="3884000" />
+      <workItem from="1610954768892" duration="9473000" />
+      <workItem from="1611018381851" duration="33569000" />
+      <workItem from="1611104680698" duration="4311000" />
+      <workItem from="1611113077269" duration="20895000" />
+      <workItem from="1611149653600" duration="3750000" />
+      <workItem from="1611190579126" duration="1977000" />
+      <workItem from="1611282581720" duration="16275000" />
+      <workItem from="1611319636497" duration="8897000" />
+      <workItem from="1611361937959" duration="9814000" />
+      <workItem from="1611467711639" duration="3047000" />
+      <workItem from="1611495210568" duration="1207000" />
+      <workItem from="1611563032734" duration="1301000" />
+      <workItem from="1611643252377" duration="4083000" />
+      <workItem from="1611657374372" duration="2868000" />
+      <workItem from="1611713769236" duration="3949000" />
+      <workItem from="1611731362698" duration="12102000" />
+      <workItem from="1611797048430" duration="5471000" />
+      <workItem from="1611812462905" duration="14310000" />
+      <workItem from="1611835742251" duration="6580000" />
+      <workItem from="1611881325529" duration="12155000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611111969394">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1611111969394" />
+    <state x="445" y="153" key="FileChooserDialogImpl" timestamp="1611309514079">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="445" y="153" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1611309514079" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1611309518811">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1611309518811" />
+    <state x="490" y="154" width="543" height="524" key="StructurePopup" timestamp="1611891537792">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="490" y="154" width="543" height="524" key="StructurePopup/0.0.1536.824@0.0.1536.824" timestamp="1611891537792" />
+    <state x="817" y="262" width="905" height="891" key="StructurePopup/0.0.2560.1400@0.0.2560.1400" timestamp="1611842462170" />
+    <state x="92" y="92" width="2376" height="1216" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1606914974232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="92" y="92" width="2376" height="1216" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1606914974232" />
+    <state x="468" y="144" width="600" height="536" key="find.popup" timestamp="1611891049113">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="468" y="144" width="600" height="536" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1611891049113" />
+    <state x="178" y="22" key="new project wizard" timestamp="1606811774220">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="178" y="22" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1606811774220" />
+    <state x="425" y="187" key="run.anything.popup" timestamp="1611746003960">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1611746003960" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1611897701806">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1611897701806" />
+    <state x="718" y="246" width="1120" height="1152" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1611837284723" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/java/util/concurrent/locks/AbstractQueuedSynchronizer.java</url>
+          <line>1356</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/java/util/HashMap.java</url>
+          <line>684</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
