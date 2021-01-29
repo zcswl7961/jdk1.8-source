@@ -16,7 +16,7 @@
 - [x] Executor [线程池](https://www.processon.com/view/link/60139f617d9c08426cf87106)
 - [x] ThreadPoolExecutor [线程池-ThreadPoolExecutor](https://www.processon.com/view/link/60139f617d9c08426cf87106)
 - [x] ScheduledThreadPoolExecutor [线程池-ScheduledThreadPoolExecutor](https://www.processon.com/view/link/60139f617d9c08426cf87106)
-- [x] ArrayList [Java包-ArrayList](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
-- [x] LinkedList [Java包-LinkedList](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
-- [ ] Queue
+- [x] ArrayList [Java包-ArrayList](https://www.processon.com/view/link/60139f617d9c08426cf87106)
+- [x] LinkedArrayList [Java包-LinkedList](https://www.processon.com/view/link/60139f617d9c08426cf87106)
+- [ ] Queue <准备写一篇博客>
 
