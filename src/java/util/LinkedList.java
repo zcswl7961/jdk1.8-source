@@ -28,6 +28,7 @@ package java.util;
 import java.util.function.Consumer;
 
 /**
+ * 双向链表的形式
  * Doubly-linked list implementation of the {@code List} and {@code Deque}
  * interfaces.  Implements all optional list operations, and permits all
  * elements (including {@code null}).
@@ -136,6 +137,7 @@ public class LinkedList<E>
 
     /**
      * Links e as last element.
+     * 链表加入
      */
     void linkLast(E e) {
         final Node<E> l = last;
@@ -188,7 +190,7 @@ public class LinkedList<E>
      * Unlinks non-null last node l.
      */
     private E unlinkLast(Node<E> l) {
-        // assert l == last && l != null;
+        // assert l == last && l != null;+
         final E element = l.item;
         final Node<E> prev = l.prev;
         l.item = null;
@@ -335,6 +337,7 @@ public class LinkedList<E>
      * @return {@code true} (as specified by {@link Collection#add})
      */
     public boolean add(E e) {
+        // 默认是加入到链表的尾部
         linkLast(e);
         return true;
     }

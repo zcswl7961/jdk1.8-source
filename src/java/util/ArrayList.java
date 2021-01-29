@@ -31,6 +31,8 @@ import java.util.function.UnaryOperator;
 import sun.misc.SharedSecrets;
 
 /**
+ *
+ * 队列
  * Resizable-array implementation of the <tt>List</tt> interface.  Implements
  * all optional list operations, and permits all elements, including
  * <tt>null</tt>.  In addition to implementing the <tt>List</tt> interface,
@@ -123,6 +125,7 @@ public class ArrayList<E> extends AbstractList<E>
      * Shared empty array instance used for default sized empty instances. We
      * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
      * first element is added.
+     *  这个写法和Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = new Object[0]的区别？
      */
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
 
@@ -131,6 +134,7 @@ public class ArrayList<E> extends AbstractList<E>
      * The capacity of the ArrayList is the length of this array buffer. Any
      * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
      * will be expanded to DEFAULT_CAPACITY when the first element is added.
+     * 数据存放，这里有一个地方，不是通过E[] elementData 进行声明，兼容非泛型的操作
      */
     transient Object[] elementData; // non-private to simplify nested class access
 
@@ -220,8 +224,10 @@ public class ArrayList<E> extends AbstractList<E>
         }
     }
 
+    // 插入之前，判断对应的容量
     private static int calculateCapacity(Object[] elementData, int minCapacity) {
         if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+            // 对于无参的构造函数new ArrayList() ，默认的数组长度时10
             return Math.max(DEFAULT_CAPACITY, minCapacity);
         }
         return minCapacity;
@@ -235,6 +241,11 @@ public class ArrayList<E> extends AbstractList<E>
         modCount++;
 
         // overflow-conscious code
+        // 扩容机制，当对应的数组长度小于需要插入的数组长度的话，则进行扩容
+        // 需要的最小长度 -> minCapacity
+        // 如果使用无参构造函数，minCapacity = DEFAULT_CAPACITY(10), 首次插入
+        // 否则，对应size + 1
+        // 如果size+1 > length 触发扩容
         if (minCapacity - elementData.length > 0)
             grow(minCapacity);
     }
@@ -256,6 +267,7 @@ public class ArrayList<E> extends AbstractList<E>
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
+        // 扩容原来的1.5倍
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
@@ -457,6 +469,7 @@ public class ArrayList<E> extends AbstractList<E>
      *
      * @param e element to be appended to this list
      * @return <tt>true</tt> (as specified by {@link Collection#add})
+     * 插入可为null的对象
      */
     public boolean add(E e) {
         ensureCapacityInternal(size + 1);  // Increments modCount!!
@@ -1091,6 +1104,7 @@ public class ArrayList<E> extends AbstractList<E>
             return true;
         }
 
+        // 迭代器
         public Iterator<E> iterator() {
             return listIterator();
         }
