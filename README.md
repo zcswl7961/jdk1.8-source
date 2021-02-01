@@ -18,5 +18,5 @@
 - [x] ScheduledThreadPoolExecutor [线程池-ScheduledThreadPoolExecutor](https://www.processon.com/view/link/60139f617d9c08426cf87106)
 - [x] ArrayList [Java包-ArrayList](https://www.processon.com/view/link/60139f617d9c08426cf87106)
 - [x] LinkedArrayList [Java包-LinkedList](https://www.processon.com/view/link/60139f617d9c08426cf87106)
-- [ ] Queue <准备写一篇博客>
+- [ ] Queue
 
