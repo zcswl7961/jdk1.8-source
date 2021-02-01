@@ -39,6 +39,8 @@ import java.util.Collection;
 import java.util.Queue;
 
 /**
+ *
+ * 阻塞队列，线程池功能操作
  * A {@link java.util.Queue} that additionally supports operations
  * that wait for the queue to become non-empty when retrieving an
  * element, and wait for space to become available in the queue when
@@ -221,6 +223,8 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Inserts the specified element into this queue, waiting if necessary
      * for space to become available.
      *
+     * 阻塞性加入
+     *
      * @param e the element to add
      * @throws InterruptedException if interrupted while waiting
      * @throws ClassCastException if the class of the specified element
@@ -234,6 +238,8 @@ public interface BlockingQueue<E> extends Queue<E> {
     /**
      * Inserts the specified element into this queue, waiting up to the
      * specified wait time if necessary for space to become available.
+     *
+     * 等待时间
      *
      * @param e the element to add
      * @param timeout how long to wait before giving up, in units of
@@ -256,6 +262,8 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Retrieves and removes the head of this queue, waiting if necessary
      * until an element becomes available.
      *
+     * 阻塞性的，
+     *
      * @return the head of this queue
      * @throws InterruptedException if interrupted while waiting
      */
@@ -265,12 +273,14 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Retrieves and removes the head of this queue, waiting up to the
      * specified wait time if necessary for an element to become available.
      *
+     * 等待一定时间获取队列头部数据（删除）
+     *
      * @param timeout how long to wait before giving up, in units of
      *        {@code unit}
      * @param unit a {@code TimeUnit} determining how to interpret the
      *        {@code timeout} parameter
      * @return the head of this queue, or {@code null} if the
-     *         specified waiting time elapses before an element is available
+     *         specified waiting time elapses before an element is available 等待超时的话，返回的是null
      * @throws InterruptedException if interrupted while waiting
      */
     E poll(long timeout, TimeUnit unit)
@@ -281,6 +291,8 @@ public interface BlockingQueue<E> extends Queue<E> {
      * (in the absence of memory or resource constraints) accept without
      * blocking, or {@code Integer.MAX_VALUE} if there is no intrinsic
      * limit.
+     *
+     * 剩余容量
      *
      * <p>Note that you <em>cannot</em> always tell if an attempt to insert
      * an element will succeed by inspecting {@code remainingCapacity}
@@ -325,6 +337,7 @@ public interface BlockingQueue<E> extends Queue<E> {
     public boolean contains(Object o);
 
     /**
+     * 一次性的取出（并删除） 队列中的所有数据并存放到传入的集合中
      * Removes all available elements from this queue and adds them
      * to the given collection.  This operation may be more
      * efficient than repeatedly polling this queue.  A failure
@@ -350,6 +363,7 @@ public interface BlockingQueue<E> extends Queue<E> {
     int drainTo(Collection<? super E> c);
 
     /**
+     * 取出指定元素个数大小的数据并加入到指定的传日集合中
      * Removes at most the given number of available elements from
      * this queue and adds them to the given collection.  A failure
      * encountered while attempting to add elements to

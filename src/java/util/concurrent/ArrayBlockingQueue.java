@@ -45,6 +45,15 @@ import java.util.Spliterators;
 import java.util.Spliterator;
 
 /**
+ *
+ * https://www.cnblogs.com/aspirant/p/8657801.html
+ * 基于数组的阻塞队列，有界范围的
+ *
+ * 内部维护了一个定长的数组，以便缓存队列中的数据对象
+ *
+ * ArrayBlockingQueue在生产者放入数据和消费者获取数据，都是共用同一个锁对象，
+ * 由此也意味着两者无法真正并行运行，这点尤其不同于LinkedBlockingQueue；
+ *
  * A bounded {@linkplain BlockingQueue blocking queue} backed by an
  * array.  This queue orders elements FIFO (first-in-first-out).  The
  * <em>head</em> of the queue is that element that has been on the
@@ -94,9 +103,11 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
     final Object[] items;
 
     /** items index for next take, poll, peek or remove */
+    // 标识取出
     int takeIndex;
 
     /** items index for next put, offer, or add */
+    // 标识加入队列的位置标识
     int putIndex;
 
     /** Number of elements in the queue */
@@ -108,6 +119,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      */
 
     /** Main lock guarding all access */
+    // 插入和获取的锁机制
     final ReentrantLock lock;
 
     /** Condition for waiting takes */
@@ -158,10 +170,14 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         // assert lock.getHoldCount() == 1;
         // assert items[putIndex] == null;
         final Object[] items = this.items;
+        // 链表尾部追加
         items[putIndex] = x;
         if (++putIndex == items.length)
+            // 如果队列已满，重新设置对应的putIndex的值
             putIndex = 0;
+        // 队列长度加1
         count++;
+        // 唤醒在take上的阻塞线程
         notEmpty.signal();
     }
 
@@ -175,7 +191,7 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         final Object[] items = this.items;
         @SuppressWarnings("unchecked")
         E x = (E) items[takeIndex];
-        items[takeIndex] = null;
+        items[takeIndex] = null; // 链表指针设置空
         if (++takeIndex == items.length)
             takeIndex = 0;
         count--;
@@ -250,10 +266,13 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException if {@code capacity < 1}
      */
     public ArrayBlockingQueue(int capacity, boolean fair) {
+        // capacity：标识容量
+        // fair：映射到ReentrantLock，是否公平锁
         if (capacity <= 0)
             throw new IllegalArgumentException();
         this.items = new Object[capacity];
         lock = new ReentrantLock(fair);
+        // 锁对应的信号机制
         notEmpty = lock.newCondition();
         notFull =  lock.newCondition();
     }
@@ -345,12 +364,16 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException {@inheritDoc}
      */
     public void put(E e) throws InterruptedException {
+        // 阻塞性的加入队列数据
         checkNotNull(e);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
+            // 如果队列已满，等待
             while (count == items.length)
+                // 调用对应的已满的信号量
                 notFull.await();
+            // 否则，加入到队列种
             enqueue(e);
         } finally {
             lock.unlock();

@@ -116,6 +116,9 @@ import sun.misc.Unsafe;
  *     LockSupport.unpark(waiters.peek());
  *   }
  * }}</pre>
+ *
+ *
+ * 是用来创建锁和其他同步类的基本线程阻塞原语。
  */
 public class LockSupport {
     private LockSupport() {} // Cannot be instantiated.
@@ -137,6 +140,7 @@ public class LockSupport {
      *        this operation has no effect
      */
     public static void unpark(Thread thread) {
+        // 唤醒指定的线程 参数：thread 代表唤醒指定的线程
         if (thread != null)
             UNSAFE.unpark(thread);
     }
@@ -170,6 +174,8 @@ public class LockSupport {
      * @since 1.6
      */
     public static void park(Object blocker) {
+        // blocker是用来记录线程被阻塞时被谁阻塞的。用于线程监控和分析工具来定位原因的。
+        // setBlocker(t, blocker)方法的作用是记录t线程是被broker阻塞的。因此我们只关注最核心的方法，也就是UNSAFE.park(false, 0L)。
         Thread t = Thread.currentThread();
         setBlocker(t, blocker);
         UNSAFE.park(false, 0L);
@@ -301,6 +307,7 @@ public class LockSupport {
      * for example, the interrupt status of the thread upon return.
      */
     public static void park() {
+        // 阻塞当前调用线程，
         UNSAFE.park(false, 0L);
     }
 

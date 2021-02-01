@@ -47,6 +47,7 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 
 /**
+ * 有界的链表阻塞队列
  * An optionally-bounded {@linkplain BlockingQueue blocking queue} based on
  * linked nodes.
  * This queue orders elements FIFO (first-in-first-out).
@@ -170,6 +171,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
     private void signalNotEmpty() {
         final ReentrantLock takeLock = this.takeLock;
         takeLock.lock();
+        // 获取对应的take锁，唤醒再take上阻塞的线程
         try {
             notEmpty.signal();
         } finally {
@@ -345,18 +347,23 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
              * out by lock), and we (or some other waiting put) are
              * signalled if it ever changes from capacity. Similarly
              * for all other uses of count in other wait guards.
+             * 如果容量满了，需要等待操作
              */
             while (count.get() == capacity) {
                 notFull.await();
             }
+            // 加入操作
             enqueue(node);
+            // 数量加1
             c = count.getAndIncrement();
             if (c + 1 < capacity)
+                // 加入之后再检查，如果容量小于执行容量，唤醒其他
                 notFull.signal();
         } finally {
             putLock.unlock();
         }
         if (c == 0)
+            // 如果容量不是空
             signalNotEmpty();
     }
 
