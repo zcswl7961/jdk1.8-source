@@ -37,6 +37,7 @@ package java.lang;
  * by the execution of the method or constructor and propagate outside
  * the method or constructor boundary.
  *
+ *
  * @author  Frank Yellin
  * @see     java.lang.Error
  * @jls 11.2 Compile-Time Checking of Exceptions

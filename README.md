@@ -38,3 +38,5 @@
   | 移除尾部 | removeLast()  | pollLast()      | takeLast()    | pollLast(timeout,timeunit)          |
   | 检查头部 | getFirst()    | peekFirst()     | 无            | 无                                  |
   | 检查尾部 | getLast()     | peekLast()      | 无            | 无                                  |
+  
+- [ ] Throwable 

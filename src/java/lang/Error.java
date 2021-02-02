@@ -26,6 +26,11 @@
 package java.lang;
 
 /**
+ * Error表示程序中无法处理的错误，表示运行应用程序中出现了严重的错误。此类错误一般表示代码运行时JVM出现问题。
+ * 通常有Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如说当jvm耗完可用内存时，
+ * 将出现OutOfMemoryError。此类错误发生时，JVM将终止线程。
+ *
+ * 这些错误是不可查的，非代码性错误。因此，当此类错误发生时，应用不应该去处理此类错误。
  * An {@code Error} is a subclass of {@code Throwable}
  * that indicates serious problems that a reasonable application
  * should not try to catch. Most such errors are abnormal conditions.
@@ -40,6 +45,7 @@ package java.lang;
  *
  * That is, {@code Error} and its subclasses are regarded as unchecked
  * exceptions for the purposes of compile-time checking of exceptions.
+ * 也就是说，{@code Error}及其子类被视为未检查的异常，用于编译时检查异常。
  *
  * @author  Frank Yellin
  * @see     java.lang.ThreadDeath
