@@ -41,6 +41,7 @@ import java.util.NoSuchElementException;
 
 
 /**
+ * 一个简单的服务提供者装载设施。
  * A simple service-provider loading facility.
  *
  * <p> A <i>service</i> is a well-known set of interfaces and (usually
@@ -52,6 +53,7 @@ import java.util.NoSuchElementException;
  * directories.  Providers can also be made available by adding them to the
  * application's class path or by some other platform-specific means.
  *
+ * SPI装载的一个原则是必须含有一个无参的构造函数
  * <p> For the purpose of loading, a service is represented by a single type,
  * that is, a single interface or abstract class.  (A concrete class can be
  * used, but this is not recommended.)  A provider of a given service contains
@@ -185,13 +187,17 @@ import java.util.NoSuchElementException;
 public final class ServiceLoader<S>
     implements Iterable<S>
 {
-
+    /**
+     * 表示状态的目录列表值
+     */
     private static final String PREFIX = "META-INF/services/";
 
     // The class or interface representing the service being loaded
+    // 即当前SPI加载的Class类对象
     private final Class<S> service;
 
     // The class loader used to locate, load, and instantiate providers
+    // 用于定位、加载和实例化提供者的类加载程序
     private final ClassLoader loader;
 
     // The access control context taken when the ServiceLoader is created
@@ -319,7 +325,7 @@ public final class ServiceLoader<S>
     }
 
     // Private inner class implementing fully-lazy provider lookup
-    //
+    // 懒加载迭代器
     private class LazyIterator
         implements Iterator<S>
     {
@@ -341,6 +347,7 @@ public final class ServiceLoader<S>
             }
             if (configs == null) {
                 try {
+                    // 获取对应的全路径
                     String fullName = PREFIX + service.getName();
                     if (loader == null)
                         configs = ClassLoader.getSystemResources(fullName);
@@ -461,6 +468,7 @@ public final class ServiceLoader<S>
      *
      * @return  An iterator that lazily loads providers for this loader's
      *          service
+     *         迭代器
      */
     public Iterator<S> iterator() {
         return new Iterator<S>() {
