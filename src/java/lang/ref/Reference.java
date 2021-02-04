@@ -35,6 +35,11 @@ import sun.misc.SharedSecrets;
  * implemented in close cooperation with the garbage collector, this class may
  * not be subclassed directly.
  *
+ * 引用类型：强引用  Object obj = new Object()
+ *          软引用：SoftReference
+ *          弱引用：WeakReference
+ *          虚引用：
+ *
  * @author   Mark Reinhold
  * @since    1.2
  */

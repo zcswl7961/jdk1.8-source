@@ -21,4 +21,7 @@
 - [x] Queue [Java包-Queue和Deque](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
 - [x] ClassLoader#getResource Class#getResource [Class和ClassLoader关于getResource()，getResourceAsStream()的区别](https://blog.csdn.net/zcswl7961/article/details/103831231)
 - [x] Throwable [Java包-Throwable体系](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
-- [ ] ServiceLoader SPI
+- [x] ServiceLoader SPI [Java包-ServiceLoader](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
+- [x] Reference 引用类型 [Java包-Reference](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
+- [x] ThreadLocal [ThreadLocal的内存泄漏问题](https://www.zcswl7961.com/index.php/2021/02/03/threadlocal/)
+- [x] Thread
