@@ -6,9 +6,9 @@
 
 #### 已完成部分：
 
-- [x] ReentrantLock   [逐行源码分析AbstractQueuedSynchronizer(AQS)中ReentrantLock的源码实现](http://www.zcswl7961.com/index.php/2020/12/03/abstractqueuedsynchronizer/)
-- [x] CountDownLatch [逐行源码分析AbstractQueuedSynchronizer(AQS)中CountDownLatch的源码实现](http://www.zcswl7961.com/index.php/2020/12/09/aqs-countdownlatch/)
-- [x] Semaphore [逐行源码分析AbstractQueuedSynchronizer(AQS)中Semaphore的源码实现](http://www.zcswl7961.com/index.php/2020/12/09/aqs-semaphore/)
+- [x] ReentrantLock   [逐行源码分析AbstractQueuedSynchronizer(AQS)中ReentrantLock的源码实现](https://www.zcswl7961.com/index.php/2020/12/03/abstractqueuedsynchronizer/)
+- [x] CountDownLatch [逐行源码分析AbstractQueuedSynchronizer(AQS)中CountDownLatch的源码实现](https://www.zcswl7961.com/index.php/2020/12/09/aqs-countdownlatch/)
+- [x] Semaphore [逐行源码分析AbstractQueuedSynchronizer(AQS)中Semaphore的源码实现](https://www.zcswl7961.com/index.php/2020/12/09/aqs-semaphore/)
 - [x] HashMap [Java包-HashMap](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
 - [x] TreeMap [Java包-TreeMap](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
 - [x] LinkedHashMap [Java包-LinkedHashMap](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
@@ -24,4 +24,4 @@
 - [x] ServiceLoader SPI [Java包-ServiceLoader](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
 - [x] Reference 引用类型 [Java包-Reference](https://www.processon.com/view/link/60139ed4079129652cdf9c93)
 - [x] ThreadLocal [ThreadLocal的内存泄漏问题](https://www.zcswl7961.com/index.php/2021/02/03/threadlocal/)
-- [x] Thread
+- [x] Thread [线程](https://www.processon.com/view/link/60139f617d9c08426cf87106)
