@@ -104,6 +104,7 @@ final class WeakCache<K, P, V> {
 
         expungeStaleEntries();
 
+        //  key：表示对应的引用对象 ClassLoader
         Object cacheKey = CacheKey.valueOf(key, refQueue);
 
         // lazily install the 2nd level valuesMap for the particular cacheKey
@@ -120,7 +121,14 @@ final class WeakCache<K, P, V> {
 
         // create subKey and retrieve the possible Supplier<V> stored by that
         // subKey from valuesMap
+        // 创建子密钥并从值Map中检索该子密钥存储的可能的供应商<V>
+        // WeakReference @see Key1 ,Key2 这里分析传入一个接口实现的代理类
         Object subKey = Objects.requireNonNull(subKeyFactory.apply(key, parameter));
+        // map :
+        //      key -> CacheKey value ->
+        //      ConcurrentMap<Object, Supplier<V>>
+        //                key -> 生成的
+        //
         Supplier<V> supplier = valuesMap.get(subKey);
         Factory factory = null;
 
@@ -138,6 +146,10 @@ final class WeakCache<K, P, V> {
 
             // lazily construct a Factory
             if (factory == null) {
+                // key: ClassLoader
+                // parameter: Class<?> ...interfaces
+                // subKey: @see Proxy.Key1
+                // valuesMap
                 factory = new Factory(key, parameter, subKey, valuesMap);
             }
 
@@ -217,7 +229,7 @@ final class WeakCache<K, P, V> {
         }
 
         @Override
-        public synchronized V get() { // serialize access
+        public synchronized V get() { // serialize access  序列化访问
             // re-check
             Supplier<V> supplier = valuesMap.get(subKey);
             if (supplier != this) {

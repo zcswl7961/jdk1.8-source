@@ -450,6 +450,7 @@ public class Proxy implements java.io.Serializable {
 
     /*
      * a key used for proxy class with 1 implemented interface
+     * 表示代理一个接口的类型
      */
     private static final class Key1 extends WeakReference<Class<?>> {
         private final int hash;
@@ -582,14 +583,21 @@ public class Proxy implements java.io.Serializable {
         // next number to use for generation of unique proxy class names
         private static final AtomicLong nextUniqueNumber = new AtomicLong();
 
+        /**
+         * Proxy根据对应的ClassLoader，Class<?> ...interfaces 生成代理Class类
+         */
         @Override
         public Class<?> apply(ClassLoader loader, Class<?>[] interfaces) {
 
+            /**
+             * IdentityHashMap：唯一性Hash 根据 == 不是根据equals
+             */
             Map<Class<?>, Boolean> interfaceSet = new IdentityHashMap<>(interfaces.length);
             for (Class<?> intf : interfaces) {
                 /*
                  * Verify that the class loader resolves the name of this
                  * interface to the same Class object.
+                 * 验证类加载程序是否将此接口的名称解析为同一个Class对象。
                  */
                 Class<?> interfaceClass = null;
                 try {
@@ -603,6 +611,8 @@ public class Proxy implements java.io.Serializable {
                 /*
                  * Verify that the Class object actually represents an
                  * interface.
+                 * 验证对应是接口
+                 * Proxy.newProxyInstance(ClassLoader, Class<> ...interfaces, InvocationHandler invocationHandler)
                  */
                 if (!interfaceClass.isInterface()) {
                     throw new IllegalArgumentException(
@@ -617,6 +627,8 @@ public class Proxy implements java.io.Serializable {
                 }
             }
 
+
+            // 包以定义代理类
             String proxyPkg = null;     // package to define proxy class in
             int accessFlags = Modifier.PUBLIC | Modifier.FINAL;
 
@@ -627,10 +639,14 @@ public class Proxy implements java.io.Serializable {
              */
             for (Class<?> intf : interfaces) {
                 int flags = intf.getModifiers();
+                // 内部类，静态内部类使用
+                // 这个时候proxyPkg = 静态内部类对应的包
                 if (!Modifier.isPublic(flags)) {
+                    // 如果不是public 公共的
                     accessFlags = Modifier.FINAL;
                     String name = intf.getName();
                     int n = name.lastIndexOf('.');
+                    //
                     String pkg = ((n == -1) ? "" : name.substring(0, n + 1));
                     if (proxyPkg == null) {
                         proxyPkg = pkg;
@@ -643,17 +659,26 @@ public class Proxy implements java.io.Serializable {
 
             if (proxyPkg == null) {
                 // if no non-public proxy interfaces, use com.sun.proxy package
+                // com.sun.proxy
                 proxyPkg = ReflectUtil.PROXY_PACKAGE + ".";
             }
 
             /*
              * Choose a name for the proxy class to generate.
+             * 选择要生成的代理类的名称。
              */
             long num = nextUniqueNumber.getAndIncrement();
+            // JDKproxy生成的代理类的名称标准：com.sun.proxy.$Proxynum (实际上，这个是针对非内部类进行生成的)
             String proxyName = proxyPkg + proxyClassNamePrefix + num;
 
             /*
              * Generate the specified proxy class.
+             * 生成指定的代理类。
+             * 使用：ProxyGenerator生成
+             * ProxyGenerator是在rt.jar包中： C:\Program Files\Java\jdk1.8.0_181\jre\lib
+             *
+             * 再次学习一下：JAVA_HOME\lib -> 通过BootstrapClassLoader 进行加载器加载
+             *             JAVA_HOME\lib\ext 使用 Extension ClassLoader 加载器加载
              */
             byte[] proxyClassFile = ProxyGenerator.generateProxyClass(
                 proxyName, interfaces, accessFlags);

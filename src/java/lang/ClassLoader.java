@@ -63,6 +63,12 @@ import sun.security.util.SecurityConstants;
 /**
  *
  * 类加载器
+ * Bootstrap ClassLoader
+ *
+ * Extension ClassLoader
+ *
+ * App ClassLoader
+ *
  * A class loader is an object that is responsible for loading classes. The
  * class <tt>ClassLoader</tt> is an abstract class.  Given the <a
  * href="#name">binary name</a> of a class, a class loader should attempt to

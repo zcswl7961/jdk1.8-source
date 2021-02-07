@@ -26,6 +26,6 @@
 - [x] ThreadLocal [ThreadLocal的内存泄漏问题](https://www.zcswl7961.com/index.php/2021/02/03/threadlocal/) [一个面试进行的ThreadLocal源码深入分析](https://blog.csdn.net/zcswl7961/article/details/100769425?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161249075716780261973706%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=161249075716780261973706&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_v1~rank_blog_v1-1-100769425.pc_v1_rank_blog_v1&utm_term=ThreadLocal&spm=1018.2226.3001.4450)
 - [x] Thread [线程](https://www.processon.com/view/link/60139f617d9c08426cf87106)
 - [x] Proxy [常见的Proxy源码分析](https://blog.csdn.net/zcswl7961/article/details/100709585?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161266347316780264097620%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=161266347316780264097620&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_v1~rank_blog_v1-1-100709585.pc_v1_rank_blog_v1&utm_term=Proxy&spm=1018.2226.3001.4450)
-- [ ] ClassLoader
+- [x] ClassLoader [深入理解JVM虚拟机]()
 
 
