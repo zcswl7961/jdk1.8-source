@@ -46,6 +46,9 @@ package java.lang.ref;
  * object that is reachable via phantom references will remain so until all
  * such references are cleared or themselves become unreachable.
  *
+ * 与软引用和弱引用不同，幻影引用不会被垃圾收集器自动清除，因为它们是队列的。 通过幻影引用可以到达的对象将保持如此，直到所有这些引用被清除或它们本身变得不可到达。
+ *
+ * 幽灵引用
  * @author   Mark Reinhold
  * @since    1.2
  */

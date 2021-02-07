@@ -95,10 +95,10 @@ import sun.security.util.SecurityConstants;
  * of class names that begin with the string {@code "$Proxy"}
  * should be, however, reserved for proxy classes.
  *
- * <li>A proxy class extends {@code java.lang.reflect.Proxy}.
+ * <li>A proxy class extends {@code java.lang.reflect.Proxy}.  动态代理类继承自Proxy
  *
  * <li>A proxy class implements exactly the interfaces specified at its
- * creation, in the same order.
+ * creation, in the same order. 代理类以相同的顺序实现其创建时指定的接口。
  *
  * <li>If a proxy class implements a non-public interface, then it will
  * be defined in the same package as that interface.  Otherwise, the
@@ -108,6 +108,7 @@ import sun.security.util.SecurityConstants;
  * defined by the same class loader and the same package with particular
  * signers.
  *
+ * 调用代理类的getInterfaces，getMethod会返回所有接口定义的抽象方法
  * <li>Since a proxy class implements all of the interfaces specified at
  * its creation, invoking {@code getInterfaces} on its
  * {@code Class} object will return an array containing the same
@@ -129,17 +130,21 @@ import sun.security.util.SecurityConstants;
  * domain will typically be granted
  * {@code java.security.AllPermission}.
  *
+ * 每一个代理类只有一个公共的构造函数，即 $Proxy(InvocationHandler invocationHandler)
  * <li>Each proxy class has one public constructor that takes one argument,
  * an implementation of the interface {@link InvocationHandler}, to set
  * the invocation handler for a proxy instance.  Rather than having to use
- * the reflection API to access the public constructor, a proxy instance
- * can be also be created by calling the {@link Proxy#newProxyInstance
+ * the reflection API to access the public constructor, a proxy instance（动态代理对象）
+ * can be also be created by calling the {@link Proxy#newProxyInstance 建议您使用Proxy.newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h)
  * Proxy.newProxyInstance} method, which combines the actions of calling
  * {@link Proxy#getProxyClass Proxy.getProxyClass} with invoking the
  * constructor with an invocation handler.
  * </ul>
  *
- * <p>A proxy instance has the following properties:
+ * <p>A proxy instance has the following properties:  一个动态代理对象具有以下属性
+ *
+ * Proxy Class: 代理类
+ * Proxy Object: 代理对象
  *
  * <ul>
  * <li>Given a proxy instance {@code proxy} and one of the
@@ -161,7 +166,7 @@ import sun.security.util.SecurityConstants;
  * passed as its argument.
  *
  * <li>An interface method invocation on a proxy instance will be
- * encoded and dispatched to the invocation handler's {@link
+ * encoded and dispatched to(编码并发送到) the invocation handler's {@link
  * InvocationHandler#invoke invoke} method as described in the
  * documentation for that method.
  *
@@ -178,11 +183,18 @@ import sun.security.util.SecurityConstants;
  * like they do for instances of {@code java.lang.Object}.
  * </ul>
  *
- * <h3>Methods Duplicated in Multiple Proxy Interfaces</h3>
+ * <h3>Methods Duplicated in Multiple Proxy Interfaces</h3>  方法多代理接口复制
  *
+ * 当代理类的两个或多个接口包含具有相同名称和参数签名的方法时，代理类接口的顺序变得重要。
  * <p>When two or more interfaces of a proxy class contain a method with
  * the same name and parameter signature, the order of the proxy class's
- * interfaces becomes significant.  When such a <i>duplicate method</i>
+ * interfaces becomes significant.
+ * 当在代理实例上调用此<i>重复方法</i时，传递给调用处理程序的{@code Method}对象不一定是其声明类可从代理方法通过的接口的引用类型分配的对象
+ * 存在这种限制是因为生成的代理类中的相应方法实现无法确定通过哪个接口调用它。
+ * 因此，当在代理实例上调用重复方法时，在代理类的接口列表中包含方法（直接或通过超级接口继承）
+ * 的最前面接口中的方法的{@code Method}对象将传递给调用处理程序的{@code invoke}方法，
+ * 而不管方法调用是通过哪种引用类型进行的。
+ * When such a <i>duplicate method</i>
  * is invoked on a proxy instance, the {@code Method} object passed
  * to the invocation handler will not necessarily be the one whose
  * declaring class is assignable from the reference type of the interface
@@ -195,6 +207,8 @@ import sun.security.util.SecurityConstants;
  * superinterface) in the proxy class's list of interfaces is passed to
  * the invocation handler's {@code invoke} method, regardless of the
  * reference type through which the method invocation occurred.
+ *
+ *
  *
  * <p>If a proxy interface contains a method with the same name and
  * parameter signature as the {@code hashCode}, {@code equals},
@@ -235,6 +249,9 @@ public class Proxy implements java.io.Serializable {
 
     /**
      * a cache of proxy classes
+     * ClassLoader
+     * Class<?>[]
+     * Class<?> 生成的代理对象字节对象
      */
     private static final WeakCache<ClassLoader, Class<?>[], Class<?>>
         proxyClassCache = new WeakCache<>(new KeyFactory(), new ProxyClassFactory());
@@ -407,6 +424,8 @@ public class Proxy implements java.io.Serializable {
      * Generate a proxy class.  Must call the checkProxyAccess method
      * to perform permission checks before calling this.
      */
+    // loader： 类加载器
+    // interfaces : 对应的接口的Class 类
     private static Class<?> getProxyClass0(ClassLoader loader,
                                            Class<?>... interfaces) {
         if (interfaces.length > 65535) {
@@ -812,6 +831,7 @@ public class Proxy implements java.io.Serializable {
         /*
          * Verify that the object is actually a proxy instance.
          */
+        // 1，首先判断对应的对象是否为代理对象
         if (!isProxyClass(proxy.getClass())) {
             throw new IllegalArgumentException("not a proxy instance");
         }

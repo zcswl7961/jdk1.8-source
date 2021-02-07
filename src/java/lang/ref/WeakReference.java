@@ -37,9 +37,16 @@ package java.lang.ref;
  * that object and all weak references to any other weakly-reachable objects
  * from which that object is reachable through a chain of strong and soft
  * references.  At the same time it will declare all of the formerly
- * weakly-reachable objects to be finalizable.  At the same time or at some
+ * weakly-reachable objects to be finalizable.
+ *
+ *
+ * At the same time or at some
  * later time it will enqueue those newly-cleared weak references that are
  * registered with reference queues.
+ *
+ *  同时，它将声明所有以前的弱可达对象都是可完成的。 同时或在稍后的某个时候，它将把那些在引用队列中注册的新批准的弱引用排队。
+ * 
+ * 弱引用
  *
  * @author   Mark Reinhold
  * @since    1.2

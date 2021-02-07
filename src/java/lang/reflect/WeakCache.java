@@ -53,6 +53,8 @@ import java.util.function.Supplier;
  * @param <K> type of keys
  * @param <P> type of parameters
  * @param <V> type of values
+ *
+ *           弱引用缓存
  */
 final class WeakCache<K, P, V> {
 
@@ -111,6 +113,7 @@ final class WeakCache<K, P, V> {
                 = map.putIfAbsent(cacheKey,
                                   valuesMap = new ConcurrentHashMap<>());
             if (oldValuesMap != null) {
+                // 如果这个cacheKey对应在map中存在，指向
                 valuesMap = oldValuesMap;
             }
         }
@@ -184,8 +187,11 @@ final class WeakCache<K, P, V> {
         return reverseMap.size();
     }
 
+    // 删除脏条目数据
     private void expungeStaleEntries() {
         CacheKey<K> cacheKey;
+        // ReferenceQueue 配合软引用，弱引用，虚引用使用当垃圾回收器准备回收一个对象时，如果发现它还有引用，那么就会在回收对象之前，把这个引用加入到与之关联的引用队列中去。
+        // 程序可以通过判断引用队列中是否已经加入了引用，来判断被引用的对象是否将要被垃圾回收，
         while ((cacheKey = (CacheKey<K>)refQueue.poll()) != null) {
             cacheKey.expungeFrom(map, reverseMap);
         }

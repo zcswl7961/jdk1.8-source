@@ -225,6 +225,9 @@ import sun.security.util.SecurityConstants;
  *
  *
  * 这个类，基本上核心的工具类中都是会使用这个
+ *
+ * 是一个允许应用实现一种安全策略的类。它允许一个应用去明确，在执行一个可能安全或者敏感的操作之前，此操作是否允许在一个安全的上下文中被执行。
+ * 应用可以同意或者拒绝执行操作。
  */
 public
 class SecurityManager {
