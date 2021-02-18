@@ -35,6 +35,7 @@ import sun.security.util.Debug;
  * This class extends ClassLoader with additional support for defining
  * classes with an associated code source and permissions which are
  * retrieved by the system policy by default.
+ * 这个类扩展了ClassLoader，并为定义具有关联代码源和权限的类提供了额外的类，这些类默认情况下由系统策略检索。
  *
  * @author  Li Gong
  * @author  Roland Schemers

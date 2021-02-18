@@ -59,13 +59,19 @@ import sun.security.util.SecurityConstants;
  * path of URLs referring to both JAR files and directories. Any URL that
  * ends with a '/' is assumed to refer to a directory. Otherwise, the URL
  * is assumed to refer to a JAR file which will be opened as needed.
+ *
+ * 这个类加载程序用于从引用JAR文件和目录的URL搜索路径加载类和资源。 任何以‘/’结尾的URL都假定是指目录。 否则，假定URL引用将根据需要打开的JAR文件。
+ *
+ *
  * <p>
  * The AccessControlContext of the thread that created the instance of
  * URLClassLoader will be used when subsequently loading classes and
  * resources.
+ * 创建URLClass Loader实例的线程的访问控制上下文将在随后加载类和资源时使用。
  * <p>
  * The classes that are loaded are by default granted permission only to
  * access the URLs specified when the URLClassLoader was created.
+ * 默认情况下，加载的类只允许访问创建URLClass Loader时指定的URL。
  *
  * @author  David Connelly
  * @since   1.2

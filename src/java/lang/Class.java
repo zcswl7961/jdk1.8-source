@@ -675,6 +675,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public ClassLoader getClassLoader() {
+        // 获取当前类对应的类加载器
         ClassLoader cl = getClassLoader0();
         if (cl == null)
             return null;
@@ -686,9 +687,12 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     // Package-private to allow ClassLoader access
+    // 包-私有以允许类加载程序访问
     ClassLoader getClassLoader0() { return classLoader; }
 
     // Initialized in JVM not by private constructor
+    // 初始化通过JVM中，而不是由私有构造函数初始化
+    // 此字段从反射访问中过滤，即通过Class 类getDeclaredField 将不会得到当前的ClassLoader field
     // This field is filtered from reflection access, i.e. getDeclaredField
     // will throw NoSuchFieldException
     private final ClassLoader classLoader;

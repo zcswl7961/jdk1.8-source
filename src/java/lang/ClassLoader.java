@@ -63,9 +63,12 @@ import sun.security.util.SecurityConstants;
 /**
  *
  * 类加载器
- * Bootstrap ClassLoader
+ * Bootstrap ClassLoader   （启动类加载器） JAVA_HOME\lib rt.jar resources.jar
  *
- * Extension ClassLoader
+ * Extension ClassLoader   扩展类加载器 JAVA_HOME\lib\ext  Launcher.ExtClassLoader
+ *
+ *
+ * CallerSensitive: 这个注解的含义  https://blog.csdn.net/aguda_king/article/details/72355807
  *
  * App ClassLoader
  *
@@ -191,11 +194,14 @@ public abstract class ClassLoader {
     }
 
     // The parent class loader for delegation
+    // 授权的父类加载程序
+    // 注意：VM硬编码此字段的偏移量，因此必须在其之后添加所有新字段。
     // Note: VM hardcoded the offset of this field, thus all new fields
     // must be added *after* it.
     private final ClassLoader parent;
 
     /**
+     * 封装一组并行能力加载器类型
      * Encapsulates the set of parallel capable loader types.
      */
     private static class ParallelLoaders {
@@ -243,6 +249,7 @@ public abstract class ClassLoader {
 
     // Maps class name to the corresponding lock object when the current
     // class loader is parallel capable.
+    // 当当前类加载程序并行时，将类名映射到相应的锁定对象
     // Note: VM also uses this field to decide if the current class loader
     // is parallel capable and the appropriate lock object for class loading.
     private final ConcurrentHashMap<String, Object> parallelLockMap;
@@ -286,6 +293,7 @@ public abstract class ClassLoader {
 
     private ClassLoader(Void unused, ClassLoader parent) {
         this.parent = parent;
+        // this.getClass() -> ExtClassLoader AppClassLoader BootstrapClassLoader  自定义
         if (ParallelLoaders.isRegistered(this.getClass())) {
             parallelLockMap = new ConcurrentHashMap<>();
             package2certs = new ConcurrentHashMap<>();
@@ -339,6 +347,8 @@ public abstract class ClassLoader {
      *          <tt>checkCreateClassLoader</tt> method doesn't allow creation
      *          of a new class loader.
      */
+    // 基类的protected成员是包内可见的，并且对子类可见；
+    // 若子类与基类不在同一包中，那么在子类中，子类实例可以访问其从基类继承而来的protected方法，而不能访问基类实例的protected方法。
     protected ClassLoader() {
         this(checkCreateClassLoader(), getSystemClassLoader());
     }
@@ -399,7 +409,7 @@ public abstract class ClassLoader {
      *         The <a href="#name">binary name</a> of the class
      *
      * @param  resolve
-     *         If <tt>true</tt> then resolve the class
+     *         If <tt>true</tt> then resolve the class  如果为真，则解析类
      *
      * @return  The resulting <tt>Class</tt> object
      *
@@ -411,13 +421,18 @@ public abstract class ClassLoader {
     {
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
+            // 首先，判断当前类是否已经被加载
             Class<?> c = findLoadedClass(name);
             if (c == null) {
                 long t0 = System.nanoTime();
                 try {
                     if (parent != null) {
+                        // 首先通过父类加载器进行加载，
+                        // 自定义类加载器 -> AppClassLoader -> ExtClassLoader
                         c = parent.loadClass(name, false);
                     } else {
+                        // 首先会进入到改方法进行执行
+                        // 通过BootstrapClassLoader进行加载
                         c = findBootstrapClassOrNull(name);
                     }
                 } catch (ClassNotFoundException e) {
@@ -429,6 +444,13 @@ public abstract class ClassLoader {
                     // If still not found, then invoke findClass in order
                     // to find the class.
                     long t1 = System.nanoTime();
+                    // 进入到这里， this：ExtClassLoader 并且BootstrapClassLoader未加载成功
+                    // 加载操作
+                    // 通过类的全限定名称获取此类的二进制字节码信息
+                    // 1，根据加载类的全限定名称获取此定义类的二进制字节码（并没有指明要从一个Class文件中获取，可以从其他渠道，譬如：网络、动态生成、数据库等）
+                    // 2，将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构（这个JDK1.8应该是元空间Metaspace）
+                    // 3，在内存中生成一个代表这个类的Class对象，作为方法区这个类的各种数据的访问入口；
+                    // 见URLClassLoader
                     c = findClass(name);
 
                     // this is the defining class loader; record the stats
@@ -876,6 +898,7 @@ public abstract class ClassLoader {
     private boolean checkName(String name) {
         if ((name == null) || (name.length() == 0))
             return true;
+        // 如果name字符串含有对应的/标志，返回false，或者是数组类型
         if ((name.indexOf('/') != -1)
             || (!VM.allowArraySyntax() && (name.charAt(0) == '[')))
             return false;
@@ -1031,6 +1054,7 @@ public abstract class ClassLoader {
      * loader has been recorded by the Java virtual machine as an initiating
      * loader of a class with that <a href="#name">binary name</a>.  Otherwise
      * <tt>null</tt> is returned.
+     * 如果Java虚拟机将此加载程序记录为具有该二进制名的类的启动加载程序，则返回具有给定二进制名的类。 否则返回NULL。
      *
      * @param  name
      *         The <a href="#name">binary name</a> of the class
@@ -1043,6 +1067,7 @@ public abstract class ClassLoader {
     protected final Class<?> findLoadedClass(String name) {
         if (!checkName(name))
             return null;
+        // 1，根据加载类的全限定
         return findLoadedClass0(name);
     }
 
@@ -1092,6 +1117,9 @@ public abstract class ClassLoader {
      *          doesn't have adequate  privileges to get the resource.
      *
      * @since  1.1
+     * classLoader.getResource(String name) 只能从classpath根目录开始匹配获取资源
+     * 写法
+     *
      */
     public URL getResource(String name) {
         URL url;
@@ -1153,22 +1181,6 @@ public abstract class ClassLoader {
     }
 
     /**
-     * Finds the resource with the given name. Class loader implementations
-     * should override this method to specify where to find resources.
-     *
-     * @param  name
-     *         The resource name
-     *
-     * @return  A <tt>URL</tt> object for reading the resource, or
-     *          <tt>null</tt> if the resource could not be found
-     *
-     * @since  1.2
-     */
-    protected URL findResource(String name) {
-        return null;
-    }
-
-    /**
      * Returns an enumeration of {@link java.net.URL <tt>URL</tt>} objects
      * representing all the resources with the given name. Class loader
      * implementations should override this method to specify where to load
@@ -1187,6 +1199,22 @@ public abstract class ClassLoader {
      */
     protected Enumeration<URL> findResources(String name) throws IOException {
         return java.util.Collections.emptyEnumeration();
+    }
+
+    /**
+     * Finds the resource with the given name. Class loader implementations
+     * should override this method to specify where to find resources.
+     *
+     * @param  name
+     *         The resource name
+     *
+     * @return  A <tt>URL</tt> object for reading the resource, or
+     *          <tt>null</tt> if the resource could not be found
+     *
+     * @since  1.2
+     */
+    protected URL findResource(String name) {
+        return null;
     }
 
     /**
@@ -1441,6 +1469,7 @@ public abstract class ClassLoader {
      */
     @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
+        // 获取当前系统的ClassLoader
         initSystemClassLoader();
         if (scl == null) {
             return null;
@@ -1456,7 +1485,11 @@ public abstract class ClassLoader {
         if (!sclSet) {
             if (scl != null)
                 throw new IllegalStateException("recursive invocation");
+            // 调用了sun.misc 包
             sun.misc.Launcher l = sun.misc.Launcher.getLauncher();
+            // Launcher.getLauncher()
+            // Launcher的无参构造函数首先会示例一个ExtClassLoader，
+            // 然后再通过 AppClassLoader 进行创建操作
             if (l != null) {
                 Throwable oops = null;
                 scl = l.getClassLoader();
@@ -1540,9 +1573,11 @@ public abstract class ClassLoader {
 
     // The class loader for the system
     // @GuardedBy("ClassLoader.class")
+    // 系统的类加载程序
     private static ClassLoader scl;
 
     // Set to true once the system class loader has been set
+    // 如果设置了scl，设置true
     // @GuardedBy("ClassLoader.class")
     private static boolean sclSet;
 
