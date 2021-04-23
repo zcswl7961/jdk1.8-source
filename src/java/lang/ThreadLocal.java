@@ -161,7 +161,7 @@ public class ThreadLocal<T> {
      * @return the current thread's value of this thread-local
      */
     public T get() {
-        // 获取当前线程得示例对象
+        // 获取当前线程得实例对象
         Thread t = Thread.currentThread();
         // 2. 获取当前线程的threadLocalMap
         ThreadLocalMap map = getMap(t);
@@ -392,7 +392,7 @@ public class ThreadLocal<T> {
             table = new Entry[INITIAL_CAPACITY];
             int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
             // Map中得对应得每一个数组使用对应得Entry进行填充
-            // Entry内部含有一个弱引用得ThreaLocal
+            // Entry内部含有一个弱引用得ThreadLocal
             table[i] = new Entry(firstKey, firstValue);
             size = 1;
             setThreshold(INITIAL_CAPACITY);
@@ -471,6 +471,7 @@ public class ThreadLocal<T> {
                 if (k == null)
                     expungeStaleEntry(i);
                 else
+                    // 开放寻址法
                     i = nextIndex(i, len);
                 e = tab[i];
             }

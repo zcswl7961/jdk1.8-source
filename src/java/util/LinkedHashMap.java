@@ -200,12 +200,12 @@ public class LinkedHashMap<K,V>
 
     /**
      * The head (eldest) of the doubly linked list.
-     * 双向链表的尾部（最老的）
+     * 双向链表的头部（最老的）
      */
     transient LinkedHashMap.Entry<K,V> head;
 
     /**
-     * 双向链表的头部（最新的）
+     * 双向链表的尾部（最新的）
      * The tail (youngest) of the doubly linked list.
      */
     transient LinkedHashMap.Entry<K,V> tail;
@@ -221,6 +221,7 @@ public class LinkedHashMap<K,V>
     // internal utilities
 
     // link at the end of list
+    // 追加到链表的后面的操作
     private void linkNodeLast(LinkedHashMap.Entry<K,V> p) {
         LinkedHashMap.Entry<K,V> last = tail;
         tail = p;
@@ -297,6 +298,7 @@ public class LinkedHashMap<K,V>
     }
 
     void afterNodeInsertion(boolean evict) { // possibly remove eldest
+        // lru 算法，自己实现的策略
         LinkedHashMap.Entry<K,V> first;
         if (evict && (first = head) != null && removeEldestEntry(first)) {
             K key = first.key;

@@ -242,6 +242,7 @@ public class ReentrantReadWriteLock
      * @param fair {@code true} if this lock should use a fair ordering policy
      */
     public ReentrantReadWriteLock(boolean fair) {
+        // fair：公平锁 非公平锁
         sync = fair ? new FairSync() : new NonfairSync();
         readerLock = new ReadLock(this);
         writerLock = new WriteLock(this);

@@ -670,6 +670,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 ((k = p.key) == key || (key != null && key.equals(k)))) // 这个表示重复对一个k，进行插入操作
                 e = p;
             else if (p instanceof TreeNode)
+                // 红黑树的情况下
                 e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
             else {
                 // 链表情况下

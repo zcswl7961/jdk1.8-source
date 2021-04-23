@@ -1488,7 +1488,7 @@ public abstract class ClassLoader {
             // 调用了sun.misc 包
             sun.misc.Launcher l = sun.misc.Launcher.getLauncher();
             // Launcher.getLauncher()
-            // Launcher的无参构造函数首先会示例一个ExtClassLoader，
+            // Launcher的无参构造函数首先会实例一个ExtClassLoader，
             // 然后再通过 AppClassLoader 进行创建操作
             if (l != null) {
                 Throwable oops = null;
