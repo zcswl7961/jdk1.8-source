@@ -41,6 +41,11 @@ import java.util.Date;
 import sun.misc.Unsafe;
 
 /**
+ * 面试的时候最喜欢问的一个问题：
+ *  什么是AQS
+ *      AQS是concurrent高性能内部的基础，它是concurrent包中内部抽象类AbstractQueuedSynchronizer的简称
+ *
+ *
  * Provides a framework for implementing blocking locks and related
  * synchronizers (semaphores, events, etc) that rely on
  * first-in-first-out (FIFO) wait queues.  This class is designed to
