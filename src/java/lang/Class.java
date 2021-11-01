@@ -260,6 +260,7 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public static Class<?> forName(String className)
                 throws ClassNotFoundException {
+        // Reflection.getCallerClass();是获取当前调用forName（String name）方法对应的Class字节码对象，
         Class<?> caller = Reflection.getCallerClass();
         return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
     }
@@ -349,6 +350,8 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     /** Called after security check for system loader access checks have been made. */
+    // 第二个参数initialize:代表的意思就是是否执行初始化操作，，静态代码块的执行。，类静态变量的值的初始化，
+    // native 方法
     private static native Class<?> forName0(String name, boolean initialize,
                                             ClassLoader loader,
                                             Class<?> caller)
