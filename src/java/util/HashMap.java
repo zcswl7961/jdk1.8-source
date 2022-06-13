@@ -734,8 +734,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 newThr = oldThr << 1; // double threshold
         }
         else if (oldThr > 0) // initial capacity was placed in threshold 初始容量放在threshold 中，就是通过new HashMap(int initialCapacity) 创建的
+            // 非无参构造函数出入的initialCapacity的大与等于他的2的n次幂对应的就是初始HasMap的容量
             newCap = oldThr;
         else {               // zero initial threshold signifies using defaults 这个就是使用new HashMap() 无参构造函数创建出来的
+            // 初始容量为16，
             newCap = DEFAULT_INITIAL_CAPACITY;
             newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }

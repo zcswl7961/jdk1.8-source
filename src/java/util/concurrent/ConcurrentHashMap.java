@@ -804,6 +804,9 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * ConcurrentHashMap初始化完成正在使用，置为size * 0.75
      * 3 扩容的时候，是一个负值，实际上，应该可以清楚的知道sizeCtl的高16位是标志位，就是每一轮扩容生成的一个唯一的标志，低16位标识参与扩容的线程数，
      * 所以这里进行加1操作。那问题来了，为什么要记录参与扩容的线程数？这个原因一会看扩容的代码就明白了，这里先提一下，记录参与扩容的线程数的原因是每个线程执行完扩容，sizeCtl就减1，当最后发现sizeCtl = rs <<RESIZE_STAMP_SHIFT的时候，说明所有参与扩容的线程都执行完，防止最后以为扩容结束了，旧的数组都被干掉了，但是还有的线程在copy。
+     * 默认情况是0
+     * 正在初始化的情况下-1
+     * 初始化结束之后的值：扩容阈值
      */
     private transient volatile int sizeCtl;
 
@@ -1064,7 +1067,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                                     if (!onlyIfAbsent)
                                         e.val = value;
                                     break;
-                                } // 插入了重复的值信息
+                                } // 插入了重复的值信息，链表插入
                                 Node<K,V> pred = e;
                                 if ((e = e.next) == null) {
                                     pred.next = new Node<K,V>(hash, key,
@@ -1098,7 +1101,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         }
         // binCount ，加入链表时，binCount >= 1
         //            如果当前正在扩容 binCount == 0
-        //            如果没槽位， binCount == 0
+        //            如果对应的槽位没值， binCount == 0
         addCount(1L, binCount);
         return null;
     }
@@ -2251,6 +2254,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         // 上面两个结果做或运算，就相当于两个数向加，因为第二数的低16位全是0。假设n = 16，最后的结果为：32795
         // 由于每次传入的n不相同，所以每次结果也不同，也就是每次的标识也不同，这个值这么做的好处就是只在低16位有值，在下面计算sizeCtl的时候，只要继续左移16位，那低16位也就没有值了
         return Integer.numberOfLeadingZeros(n) | (1 << (RESIZE_STAMP_BITS - 1));
+        //
     }
 
     /**
@@ -2260,6 +2264,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         Node<K,V>[] tab; int sc;
         while ((tab = table) == null || tab.length == 0) {
             if ((sc = sizeCtl) < 0)
+                // 使当前线程从运行状态变成就绪状态
                 Thread.yield(); // lost initialization race; just spin  丢失初始化竞赛；只需旋转
             else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {  // -1表示当前有线程正在进行初始化操作
                 try {
@@ -2274,6 +2279,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                 } finally {
                     // 在完成初始化table的任务之后，线程需要将sizeCtl设置成可以使得其他线程获得变量的状态
                     sizeCtl = sc; // sc = 12
+                    //  1100
                 }
                 break;
             }
@@ -2301,8 +2307,8 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         // 上面的cas操作的前提是基于 counterCells ==null
         if ((as = counterCells) != null ||
             !U.compareAndSwapLong(this, BASECOUNT, b = baseCount, s = b + x)) {
-            // 如果 counterCells == null 并且cas操作失败，说明出现并发情况[这种并发情况发生再初始并发都没有记录counterCells的时候]
-            // 如果 counterCells != null 说明当前ConcurrentHashMap已经存储了对应的因并发而导致失败的baseCount
+            // 进入到该方法的条件：如果 counterCells == null 并且cas操作失败，说明出现并发情况[这种并发情况发生再初始并发都没有记录counterCells的时候]
+            //                 如果 counterCells != null 说明当前ConcurrentHashMap已经存储了对应的因并发而导致失败的baseCount
             CounterCell a; long v; int m;
             boolean uncontended = true;
             // 再次判断。如果counterCells == null 或者 (m = as.length - 1) < 0 这玩意就是as.length < 1
@@ -2329,7 +2335,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
         if (check >= 0) {
             Node<K,V>[] tab, nt; int n, sc;
             // 注意看好这个s的取值，如果counterCells == null 直接用baseCount + 1
-            // 如果counterCells ！= null 通过sumCount取值
+            // 如果counterCells ！= null 通过sumCount取值 也就是size的值
             // 判断当前的s是否大于等于sizeCtl : 注意这个sizeCtl首次是通过initTable（）赋值的，
             // 切入点：多线程并发的情况下会进入这里，进行协助扩容
             while (s >= (long)(sc = sizeCtl) && (tab = table) != null &&
@@ -2384,53 +2390,6 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             return nextTab;
         }
         return table;
-    }
-
-    /**
-     * Tries to presize table to accommodate the given number of elements.
-     *
-     * @param size number of elements (doesn't need to be perfectly accurate)
-     */
-    private final void tryPresize(int size) {
-        // 视情况将size调整为2的n次幂
-        int c = (size >= (MAXIMUM_CAPACITY >>> 1)) ? MAXIMUM_CAPACITY :
-            tableSizeFor(size + (size >>> 1) + 1);
-        int sc;
-        while ((sc = sizeCtl) >= 0) {
-            Node<K,V>[] tab = table; int n;
-            if (tab == null || (n = tab.length) == 0) {
-                n = (sc > c) ? sc : c;
-                if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
-                    try {
-                        if (table == tab) {
-                            @SuppressWarnings("unchecked")
-                            Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
-                            table = nt;
-                            sc = n - (n >>> 2);
-                        }
-                    } finally {
-                        sizeCtl = sc;
-                    }
-                }
-            }
-            else if (c <= sc || n >= MAXIMUM_CAPACITY)
-                break;
-            else if (tab == table) {
-                int rs = resizeStamp(n);
-                if (sc < 0) {
-                    Node<K,V>[] nt;
-                    if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
-                        sc == rs + MAX_RESIZERS || (nt = nextTable) == null ||
-                        transferIndex <= 0)
-                        break;
-                    if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1))
-                        transfer(tab, nt);
-                }
-                else if (U.compareAndSwapInt(this, SIZECTL, sc,
-                                             (rs << RESIZE_STAMP_SHIFT) + 2))
-                    transfer(tab, null);
-            }
-        }
     }
 
     /**
@@ -2583,6 +2542,53 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Tries to presize table to accommodate the given number of elements.
+     *
+     * @param size number of elements (doesn't need to be perfectly accurate)
+     */
+    private final void tryPresize(int size) {
+        // 视情况将size调整为2的n次幂
+        int c = (size >= (MAXIMUM_CAPACITY >>> 1)) ? MAXIMUM_CAPACITY :
+                tableSizeFor(size + (size >>> 1) + 1);
+        int sc;
+        while ((sc = sizeCtl) >= 0) {
+            Node<K,V>[] tab = table; int n;
+            if (tab == null || (n = tab.length) == 0) {
+                n = (sc > c) ? sc : c;
+                if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+                    try {
+                        if (table == tab) {
+                            @SuppressWarnings("unchecked")
+                            Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
+                            table = nt;
+                            sc = n - (n >>> 2);
+                        }
+                    } finally {
+                        sizeCtl = sc;
+                    }
+                }
+            }
+            else if (c <= sc || n >= MAXIMUM_CAPACITY)
+                break;
+            else if (tab == table) {
+                int rs = resizeStamp(n);
+                if (sc < 0) {
+                    Node<K,V>[] nt;
+                    if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                            sc == rs + MAX_RESIZERS || (nt = nextTable) == null ||
+                            transferIndex <= 0)
+                        break;
+                    if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1))
+                        transfer(tab, nt);
+                }
+                else if (U.compareAndSwapInt(this, SIZECTL, sc,
+                        (rs << RESIZE_STAMP_SHIFT) + 2))
+                    transfer(tab, null);
             }
         }
     }
@@ -6387,8 +6393,8 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     private static final long CELLSBUSY;
     private static final long CELLVALUE;
     private static final long ABASE;
-    private static final int ASHIFT;
 
+    private static final int ASHIFT;
     static {
         try {
             U = sun.misc.Unsafe.getUnsafe();

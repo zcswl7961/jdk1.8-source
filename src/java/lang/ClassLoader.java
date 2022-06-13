@@ -283,6 +283,7 @@ public abstract class ClassLoader {
     // @GuardedBy("itself")
     private final HashMap<String, Package> packages = new HashMap<>();
 
+    //https://blog.csdn.net/iflink/article/details/122386983
     private static Void checkCreateClassLoader() {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -415,10 +416,13 @@ public abstract class ClassLoader {
      *
      * @throws  ClassNotFoundException
      *          If the class could not be found
+     *
+     * 具有双亲委派机制的累加载器策略
      */
     protected Class<?> loadClass(String name, boolean resolve)
         throws ClassNotFoundException
     {
+        // 可并行度的ClassLoader的类加载，ExtClassLoader和对应的AppClassLoader都是可以
         synchronized (getClassLoadingLock(name)) {
             // First, check if the class has already been loaded
             // 首先，判断当前类是否已经被加载
@@ -1044,8 +1048,8 @@ public abstract class ClassLoader {
         if (!checkName(name)) return null;
 
         return findBootstrapClass(name);
-    }
 
+    }
     // return null if not found
     private native Class<?> findBootstrapClass(String name);
 
@@ -1469,7 +1473,7 @@ public abstract class ClassLoader {
      */
     @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
-        // 获取当前系统的ClassLoader
+        // 获取当前系统的ClassLoader,组装当前系统对应的AppClassLoader
         initSystemClassLoader();
         if (scl == null) {
             return null;

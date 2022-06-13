@@ -367,6 +367,8 @@ public class URLClassLoader extends SecureClassLoader implements Closeable {
             result = AccessController.doPrivileged(
                 new PrivilegedExceptionAction<Class<?>>() {
                     public Class<?> run() throws ClassNotFoundException {
+                        // example com.zcswl.local.Demo
+                        // com/zcswl/local/Demo.class
                         String path = name.replace('.', '/').concat(".class");
                         Resource res = ucp.getResource(path, false);
                         if (res != null) {
