@@ -152,7 +152,7 @@ public interface Queue<E> extends Collection<E> {
      * {@code true} upon success and throwing an {@code IllegalStateException}
      * if no space is currently available.
      *
-     * add()：增加一个元素。如果队列已满，则抛出一个IIIegaISlabEepeplian异常
+     * add()：增加一个元素。如果队列已满，则抛出一个IllegalArgumentException异常
      *
      * @param e the element to add
      * @return {@code true} (as specified by {@link Collection#add})

@@ -34,11 +34,13 @@
  */
 
 package java.util.concurrent.locks;
-import java.util.concurrent.TimeUnit;
+
+import sun.misc.Unsafe;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import sun.misc.Unsafe;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 面试的时候最喜欢问的一个问题：
@@ -393,6 +395,13 @@ public abstract class AbstractQueuedSynchronizer
          * 共享模式
          * 独占模式
          *
+         *
+         * 2022.7.7
+         * 独占锁和共享锁的一个主要的区别就是
+         * 独占锁是在获取过程中，即cas 变更state的时候一定不是自旋转操作，而在释放所的过程中，同样不会cas的操作去释放，而是去唤醒CLH锁等待队列
+         * 共享锁是在获锁过程中，即cas 变更state的时候一定是自旋操作，并且在释放所的时候
+         *
+         *
          * 共享锁和独占锁的区别是，共享锁是拿到锁了之后，去释放一系列的park，然后竞争去拿锁
          * 独占锁，只是释放一个：ReentrantLock就是独占锁
          * 共享锁，会释放队列中的所有，Semaphore，CountDownLatch
@@ -689,7 +698,6 @@ public abstract class AbstractQueuedSynchronizer
         Node s = node.next;
         // 递归获取当前head节点
         // head 得下一个节点，判断它是不是要挂起
-        // 如果下一个是null得情况下，这个还真有可能，这个说明CLH得锁等待队列都拿到锁了
         if (s == null || s.waitStatus > 0) {
             s = null;
             // 这个代码写的很牛皮，s.waitStatus > 0 说明 CANCELLED
@@ -700,6 +708,7 @@ public abstract class AbstractQueuedSynchronizer
                 if (t.waitStatus <= 0)
                     s = t;
         }
+        // 如果下一个是null得情况下，这个还真有可能，这个说明CLH得锁等待队列都拿到锁了
         if (s != null)
             // 唤醒后驱节点的线程
             LockSupport.unpark(s.thread);
@@ -805,6 +814,17 @@ public abstract class AbstractQueuedSynchronizer
         // Before, we are free of interference from other threads.
         node.waitStatus = Node.CANCELLED;
 
+        /*
+         * head() - node(a) -> node(b) --> node(c)(tail)
+         *
+         * node == b; cancel CANCELLED
+         * pred = a;
+         * predNext = b;
+         * node.next = tail
+         *
+         *
+         *
+         */
         // If we are the tail, remove ourselves.
         if (node == tail && compareAndSetTail(node, pred)) {
             compareAndSetNext(pred, predNext, null);
@@ -812,6 +832,7 @@ public abstract class AbstractQueuedSynchronizer
             // If successor needs signal, try to set pred's next-link
             // so it will get one. Otherwise wake it up to propagate.
             int ws;
+            // 唤醒操作
             if (pred != head &&
                 ((ws = pred.waitStatus) == Node.SIGNAL ||
                  (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) &&
@@ -839,7 +860,7 @@ public abstract class AbstractQueuedSynchronizer
     private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
         int ws = pred.waitStatus;
         if (ws == Node.SIGNAL)
-            // 这个的意思是当前节点node 的prev节点为SINGLA,当前节点需要被挂起
+            // 这个的意思是当前节点node 的prev节点为SINGLA,当前节点需要被挂起 unparking
             /*
              * This node has already set status asking a release
              * to signal it, so it can safely park.
@@ -873,6 +894,7 @@ public abstract class AbstractQueuedSynchronizer
      */
     static void selfInterrupt() {
         // 你没有获取到锁，抱歉。得暂停一哈（给当前线程一个中断得信号）
+        // 被处理过一次了，需要再次进行处理一次
         Thread.currentThread().interrupt();
     }
 
@@ -913,8 +935,15 @@ public abstract class AbstractQueuedSynchronizer
             for (;;) {
                 // 返回这个node 的prev
                 final Node p = node.predecessor();
-                // p == head的情况下是只能有一个，有一个线程获取到了锁，你没有，并且当前线程初始化了CLH锁等待队列即：new Node(Head)  -> node(tail)
+                // 【p == head的情况下是只能有一个，有一个线程获取到了锁，你没有，并且当前线程初始化了CLH锁等待队列即：new Node(Head)  -> node(tail)，】
                 // 还有一种情况就是当前节点的前驱节点获取了锁，显然p == head
+                /*
+                2022年7月7日：上面的这个描述有问题
+                   p == head 的情况实际上存在这种情况，有一个线程无限持有了ReentrantLock锁（假如），A线程进入到这个方法之前实际上上会初次初始化
+                   CLH 锁等待队列（实际上在第一尝试获锁失败的线程节点才会初次初始化CLH锁等待队列）
+                            new Node(waitStatus = 0) -> Node(Current Thread a, Node.EXCLUSIVE[NULL]， waitStatus = 0)
+                   p == head 说明获锁失败的当前线程在经历了cas 自旋操作之后是具备了在已持有锁线程释放之后第一个去竞争锁的操作
+                 */
                 // 显然p == head 的情况下，我是能够再去尝试拿一下锁的（CLH都没有人等锁了，我当然要去看一下拿锁的那个人有没有把锁释放了，我去拿）
                 if (p == head && tryAcquire(arg)) {
                     // 这种情况是：那个拿锁的哥们神奇的是在我tryAcquire 的时候刚好把锁给释放了
@@ -925,7 +954,7 @@ public abstract class AbstractQueuedSynchronizer
                 }
                 // 有以下两种情况导致执行这个方法
                 // 1，tryAcquire(arg) 没拿到锁，即还没有锁释放掉
-                // 2，p ！= head，这种情况下说明CLH锁等待队列里有人等了很久了
+                // 2，p ！= head，这种情况下说明CLH锁等待队列里有人等了很久了 ？
                 if (shouldParkAfterFailedAcquire(p, node) &&
                         // 挂起当前线程  ，
                         // 还是要带着分析的角度来看这个执行的条件， 首先shouldParkAfterFailedAcquire(p, node) 为true
@@ -936,6 +965,7 @@ public abstract class AbstractQueuedSynchronizer
             }
         } finally {
             // 这个？？？？？ 内部自旋报异常抛出？
+            // 2022年7月7日 这个failed为true的情况只会存在内部自旋报异常的情况
             if (failed)
                 cancelAcquire(node);
         }

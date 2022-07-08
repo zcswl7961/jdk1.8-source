@@ -227,10 +227,6 @@ public class ReentrantLock implements Lock, java.io.Serializable {
         private static final long serialVersionUID = -3000897897090466540L;
 
         // 加锁操作
-        final void lock() {
-            acquire(1);
-        }
-
         /**
          * Fair version of tryAcquire.  Don't grant access unless
          * recursive call or no waiters or is first.
@@ -244,7 +240,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
                 // hasQueuedPredecessors 对应公平锁而言，当然是要看对应链表队列是否还有线程等待这个锁，毕竟是公平的，有人已经等了那你肯定靠边
                 if (!hasQueuedPredecessors() &&
 
-                    compareAndSetState(0, acquires)) {
+                        compareAndSetState(0, acquires)) {
                     // 获取了锁，设置同步器的独占线程值 AOS
                     setExclusiveOwnerThread(current);
                     return true;
@@ -264,6 +260,10 @@ public class ReentrantLock implements Lock, java.io.Serializable {
             // 3， compareAndSetState(0, acquires) 执行一次cas失败，说明在同一个时间片段内，刚好有一个线程修改了state的值
             // 4， c != 0 current != getExclusiveOwnerThread 有其他线程竞争了锁，很明显你不能去获取
             return false;
+        }
+
+        final void lock() {
+            acquire(1);
         }
     }
 
