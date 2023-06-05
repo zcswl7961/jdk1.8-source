@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="tools" level="project" />
+    <orderEntry type="library" name="com.diffplug.osgi.extension.sun.misc-0.0.0" level="project" />
   </component>
 </module>

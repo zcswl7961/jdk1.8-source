@@ -47,7 +47,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
-import sun.misc.VM;
 
 /**
  * A random number generator isolated to the current thread.  Like the

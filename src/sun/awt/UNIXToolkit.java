@@ -134,7 +134,7 @@ public abstract class UNIXToolkit extends SunToolkit
         synchronized (GTK_LOCK) {
             if (nativeGTKLoaded == null) {
                 nativeGTKLoaded = load_gtk(getEnabledGtkVersion().getNumber(),
-                        isGtkVerbose());
+                                                                isGtkVerbose());
             }
         }
         return nativeGTKLoaded;
@@ -181,7 +181,7 @@ public abstract class UNIXToolkit extends SunToolkit
 
         // Direction.
         TextDirection dir = ("ltr".equals(str[4]) ? TextDirection.LTR :
-                TextDirection.RTL);
+                                                    TextDirection.RTL);
 
         // Load the stock icon.
         BufferedImage img = getStockIcon(-1, str[2], size, dir.ordinal(), null);
@@ -232,8 +232,8 @@ public abstract class UNIXToolkit extends SunToolkit
      * @return The stock icon or null if it was not found or loaded.
      */
     public BufferedImage getStockIcon(final int widgetType, final String stockId,
-                                      final int iconSize, final int direction,
-                                      final String detail) {
+                                final int iconSize, final int direction,
+                                final String detail) {
         if (!loadGTK()) {
             return null;
 
@@ -257,7 +257,7 @@ public abstract class UNIXToolkit extends SunToolkit
      * Do NOT call this method directly.
      */
     public void loadIconCallback(byte[] data, int width, int height,
-                                 int rowStride, int bps, int channels, boolean alpha) {
+            int rowStride, int bps, int channels, boolean alpha) {
         // Reset the stock image to null.
         tmpImage = null;
 
@@ -282,7 +282,7 @@ public abstract class UNIXToolkit extends SunToolkit
     private static native boolean unload_gtk();
     private native boolean load_gtk_icon(String filename);
     private native boolean load_stock_icon(int widget_type, String stock_id,
-                                           int iconSize, int textDirection, String detail);
+            int iconSize, int textDirection, String detail);
 
     private native void nativeSync();
     private static native int get_gtk_version();
@@ -315,9 +315,9 @@ public abstract class UNIXToolkit extends SunToolkit
              */
             aaValue = getDesktopProperty(FONTCONFIGAAHINT);
             if (aaValue != null) {
-                return new RenderingHints(KEY_TEXT_ANTIALIASING, aaValue);
+               return new RenderingHints(KEY_TEXT_ANTIALIASING, aaValue);
             } else {
-                return null; // no Gnome or KDE Desktop properties available.
+                 return null; // no Gnome or KDE Desktop properties available.
             }
         }
 
@@ -327,11 +327,11 @@ public abstract class UNIXToolkit extends SunToolkit
          * So if its !=0 then lets assume AA.
          */
         boolean aa = ((aaValue instanceof Number)
-                && ((Number) aaValue).intValue() != 0);
+                        && ((Number) aaValue).intValue() != 0);
         Object aaHint;
         if (aa) {
             String subpixOrder =
-                    (String)getDesktopProperty("gnome.Xft/RGBA");
+                (String)getDesktopProperty("gnome.Xft/RGBA");
 
             if (subpixOrder == null || subpixOrder.equals("none")) {
                 aaHint = VALUE_TEXT_ANTIALIAS_ON;
@@ -354,7 +354,7 @@ public abstract class UNIXToolkit extends SunToolkit
     }
 
     private native boolean gtkCheckVersionImpl(int major, int minor,
-                                               int micro);
+        int micro);
 
     /**
      * Returns {@code true} if the GTK+ library is compatible with the given
