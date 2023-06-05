@@ -52,6 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import sun.misc.CompoundEnumeration;
 import sun.misc.Resource;
 import sun.misc.URLClassPath;
+import sun.misc.VM;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 import sun.reflect.misc.ReflectUtil;

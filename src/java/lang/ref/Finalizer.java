@@ -29,6 +29,7 @@ import java.security.PrivilegedAction;
 import java.security.AccessController;
 import sun.misc.JavaLangAccess;
 import sun.misc.SharedSecrets;
+import sun.misc.VM;
 
 final class Finalizer extends FinalReference<Object> { /* Package-private; must be in
                                                           same package as the Reference

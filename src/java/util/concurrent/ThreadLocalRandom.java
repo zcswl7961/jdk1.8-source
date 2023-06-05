@@ -35,6 +35,8 @@
 
 package java.util.concurrent;
 
+import sun.misc.VM;
+
 import java.io.ObjectStreamField;
 import java.util.Random;
 import java.util.Spliterator;

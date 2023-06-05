@@ -25,6 +25,8 @@
 
 package java.lang;
 
+import sun.misc.VM;
+
 import java.io.PrintStream;
 import java.util.Arrays;
 
